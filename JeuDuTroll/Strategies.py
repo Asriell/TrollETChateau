@@ -2,7 +2,10 @@ import random
 import Solveur as simplex
 
 def StrategieAleatoire(n):
-    rand = random.randint(1,n//2)
+    if n//2 > 1 : 
+        rand = random.randint(1,n//2)
+    else :
+        rand = 1
     print ("Coup joue : ", rand)
     return rand
 
@@ -33,19 +36,23 @@ def StrategieTest() :
 
 def StrategieMixteOptimale(nbPierresCourant,nbPierresCourantAdversaire,nbCases,positionTroll) :
     #Calcul de la matrice de gains
-    rand = random.random()
-    matrice = []
-    for i in range(nbPierresCourant) :
-        col = []
-        for j in range(nbPierresCourantAdversaire) :
-            col.append(float("inf"))
-        matrice.append(col)
-    simplex.MatriceGains(nbPierresCourant,nbPierresCourantAdversaire,positionTroll,nbCases,matrice)
-    s = simplex.SimplexGainsMatrice(len(matrice),len(matrice[0]),matrice)
-    probabilitesStrategieMixte = s.x
-    acc = 0
-    i = 0
-    while acc <= rand :
-        acc += probabilitesStrategieMixte[i]
-        i+=1
-    return i
+    if nbPierresCourant > 1 :
+        rand = random.random()
+        matrice = []
+        for i in range(nbPierresCourant-1) :
+            col = []
+            for j in range(nbPierresCourantAdversaire-1) :
+                col.append(float("inf"))
+            matrice.append(col)
+        simplex.MatriceGains(nbPierresCourant-1,nbPierresCourantAdversaire-1,positionTroll,nbCases,matrice)
+        s = simplex.SimplexGainsMatrice(len(matrice),len(matrice[0]),matrice)
+        probabilitesStrategieMixte = s.x
+        print(probabilitesStrategieMixte)
+        acc = 1
+        i = nbPierresCourant-1
+        while acc > rand and i > 1:
+            acc -= probabilitesStrategieMixte[i]
+            i-=1
+        return i
+    else :
+        return 1

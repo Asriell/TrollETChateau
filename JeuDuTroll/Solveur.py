@@ -135,7 +135,10 @@ def SimplexGainsMatrice(size_x,size_y,mat) :
         for j in range(size_y) :
             if (mat[i][j] == float("inf")) :
                 full = False
-    assert(full)
+    if not full : 
+        for i in range (len(mat)) :
+            print(mat[i])
+    assert full,"valeurs non calculees dans la matrice : "
     b = (0.0,1.0)
     bnds = []
     x0 = []
@@ -154,30 +157,107 @@ def SimplexGainsMatrice(size_x,size_y,mat) :
     return solveur.solve()
 
 def ValeurGainsMatrice(size_x,size_y,mat) :
-    #return SimplexGainsMatrice(size_x,size_y,mat).x[size_x]
-    return SimplexGainsMatrice(size_x,size_y,mat).fun
+    return SimplexGainsMatrice(size_x,size_y,mat).x[size_x]
 
-def MatriceGains(NbPierresJ1,nbPierresJ2,PositionTroll,nbCases,mat):
-    t = PositionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
-    for i in range(NbPierresJ1) :
-        for j in range(nbPierresJ2) :
-            if i == j and t == 0 :
-                mat[i][j] = 0
-            elif i == 0 :
-                if j == abs(t) :
-                    mat[i][j] = 0
-                elif j < abs(t) :
-                    mat[i][j] = 1
+#def MatriceGains(NbPierresJ1,nbPierresJ2,PositionTroll,nbCases,mat):
+#    t = PositionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
+#    for i in range(NbPierresJ1) :
+#        for j in range(nbPierresJ2) :
+#            if i == j and t == 0 :
+#                mat[i][j] = 0
+#            elif i == 0 :
+#                if j == t :
+#                    mat[i][j] = 0
+#                elif j < t :
+#                    mat[i][j] = 1
+#                else :
+#                    mat[i][j] = -1
+#            elif j == 0 :
+#                if t < 0 :
+#                    if i == abs(t) :
+#                        mat[i][j] = 0
+#                    elif i < abs(t) :
+#                        mat[i][j] = -1
+#                    else :
+#                        mat[i][j] = 1
+#            else :
+#                mat[i][j] = ValeurGainsMatrice(i-1,j-1,mat)
+
+
+
+def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) :
+    positionTrollInitiale = positionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
+    for i in range (nbPierresJ1) :
+        for j in range (nbPierresJ2) : # i = nb pierres restantes au J1, j = nb pierres restantes au J2
+            t = positionTrollInitiale
+            nbPierresLanceesJ1 = nbPierresJ1 - i
+            nbPierresLanceesJ2 = nbPierresJ2 - j
+            if nbPierresLanceesJ1 < nbPierresLanceesJ2 :
+                t -= 1
+            if nbPierresLanceesJ1 > nbPierresLanceesJ2 :
+                t += 1
+            if i == 0 :
+                if t > 0 :
+                    if j == t :
+                        matrice[i][j] = 0
+                    elif j > t :
+                        matrice[i][j] = -1
+                    else :
+                        matrice[i][j] = 1
                 else :
-                    mat[i][j] = -1
+                    matrice[i][j] = -1
             elif j == 0 :
-                if i == abs(t) :
-                    mat[i][j] = 0
-                elif i < abs(t) :
-                    mat[i][j] = -1
+                if t < 0 :
+                    if i == abs(t) :
+                        matrice[i][j] = 0
+                    elif i < abs(t) :
+                        matrice[i][j] = -1
+                    else :
+                        matrice[i][j] = 1
                 else :
-                    mat[i][j] = 1
+                    matrice[i][j] = 1
             else :
-                mat[i][j] = ValeurGainsMatrice(i-1,j-1,mat)
+                matTmp = []
+                for iTmp in range(i+1):
+                    col = []
+                    for jTmp in range(j):
+                        col.append(matrice[iTmp][jTmp])
+                    matTmp.append(col)
+                #print("Pour : ",nbPierresJ1, "  ", nbPierresJ2,"   ", positionTroll)
+                #print("Valeurs : ",i, "  ", j)
+                #for k in range (len(matrice)):
+                #    print("matrice : ",matrice[k])
+                #for k in range(len(matTmp)) :
+                #    print("mat tmp : " ,matTmp[k])
+                matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp)
 
 
+#matrice = []
+#for i in range(15) :
+#    col = []
+#    for j in range(15) :
+#        col.append(float("inf"))
+#    matrice.append(col)
+
+#MatriceGains(14,14,4,7,matrice)
+
+#matTmp = []
+#for iTmp in range(14):
+#    col = []
+#    for jTmp in range(14):
+#        col.append(matrice[iTmp][jTmp])
+#    matTmp.append(col)
+
+#for i in range(len(matTmp)) :
+#    print(matTmp[i])
+
+#print(SimplexGainsMatrice(14,14,matTmp))
+
+#matrice = [
+#        [31/6,-1,-2,-3],
+#        [-1,31/6,-1,-2],
+#        [-2,-1,31/6,-1],
+#        [-3,-2,-1,31/6]
+#        ]
+
+#print(SimplexGainsMatrice(4,4,matrice))

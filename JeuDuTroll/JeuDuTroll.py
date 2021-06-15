@@ -57,8 +57,7 @@ def Partie(mode,CoupsJ1,CoupsJ2) :
                     print("entrez une valeur entiere svp")
             CoupsJ2.append(CoupJ2)
         else :
-            CoupJ2 = strat.StrategieTest()
-            #CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
+            CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
             #CoupJ2 = strat.StrategiePrudentePure(15,7,plateau.nbPierresJoueur2)
             #CoupJ2 = strat.Strategie1(15,7,plateau.nbPierresJoueur2,plateau.nbPierresJoueur1,plateau.posTroll,2)
             CoupsJ2.append(CoupJ2)
