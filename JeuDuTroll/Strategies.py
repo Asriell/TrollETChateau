@@ -45,13 +45,13 @@ def StrategieMixteOptimale(nbPierresCourant,nbPierresCourantAdversaire,nbCases,p
                 col.append(float("inf"))
             matrice.append(col)
         simplex.MatriceGains(nbPierresCourant-1,nbPierresCourantAdversaire-1,positionTroll,nbCases,matrice)
-        s = simplex.SimplexGainsMatrice(len(matrice),len(matrice[0]),matrice)
+        s = simplex.SimplexGainsMatrice(nbPierresCourant-1,nbPierresCourantAdversaire-1,matrice)
         probabilitesStrategieMixte = s.x
         print(probabilitesStrategieMixte)
         acc = 1
-        i = nbPierresCourant-1
+        i = nbPierresCourant -1
         while acc > rand and i > 1:
-            acc -= probabilitesStrategieMixte[i]
+            acc -= probabilitesStrategieMixte[nbPierresCourant -i]
             i-=1
         return i
     else :

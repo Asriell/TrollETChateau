@@ -204,8 +204,13 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) :
                         matrice[i][j] = -1
                     else :
                         matrice[i][j] = 1
-                else :
+                elif t < 0 :
                     matrice[i][j] = -1
+                else :
+                    if j == 0 :
+                        matrice[i][j] = 0
+                    else :
+                        matrice[i][j] = -1
             elif j == 0 :
                 if t < 0 :
                     if i == abs(t) :
@@ -214,11 +219,16 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) :
                         matrice[i][j] = -1
                     else :
                         matrice[i][j] = 1
-                else :
+                elif t > 0 :
                     matrice[i][j] = 1
+                else :
+                    if i == 0 :
+                        matrice[i][j] = 0
+                    else :
+                        matrice[i][j] = 1
             else :
                 matTmp = []
-                for iTmp in range(i+1):
+                for iTmp in range(i):
                     col = []
                     for jTmp in range(j):
                         col.append(matrice[iTmp][jTmp])
@@ -230,16 +240,18 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) :
                 #for k in range(len(matTmp)) :
                 #    print("mat tmp : " ,matTmp[k])
                 matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp)
+                #print(ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp))
 
 
 #matrice = []
-#for i in range(15) :
+#for i in range(14) :
 #    col = []
-#    for j in range(15) :
+#    for j in range(14) :
 #        col.append(float("inf"))
 #    matrice.append(col)
 
-#MatriceGains(14,14,4,7,matrice)
+#MatriceGains(13,10,4,7,matrice)
+#print(SimplexGainsMatrice(13,10,matrice))
 
 #matTmp = []
 #for iTmp in range(14):
