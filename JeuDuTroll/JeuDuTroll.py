@@ -1,4 +1,12 @@
 import Strategies as strat
+import threading
+import multiprocessing
+import time
+
+s1 = 0
+s2 = 0
+matchsNuls = 0
+lock = threading.Lock()
 
 class Plateau :
     nbCases = 7
@@ -19,8 +27,8 @@ class Plateau :
 
 
 
-def Partie(mode,CoupsJ1,CoupsJ2) :
-    plateau = Plateau(7,4,15,15)
+def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,CoupsJ1,CoupsJ2) :
+    plateau = Plateau(_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart)
     print(plateau.nbCases," ",plateau.posTroll," ",plateau.nbPierresJoueur1," ",plateau.nbPierresJoueur2)
     fin = False
     while not fin :
@@ -69,6 +77,11 @@ def Partie(mode,CoupsJ1,CoupsJ2) :
             plateau.posTroll -= 1 
         if (plateau.nbPierresJoueur1 <= 0 or plateau.nbPierresJoueur2 <= 0 or plateau.posTroll == plateau.nbCases or plateau.posTroll == 1) :
             fin = True
+    return ElectionJoueurGagnant(plateau)
+
+
+
+def ElectionJoueurGagnant (plateau) : 
     if plateau.posTroll == 1 :
         print("Joueur 2 gagne ! ")
         return 2
@@ -92,7 +105,6 @@ def Partie(mode,CoupsJ1,CoupsJ2) :
             return 1
 
 
-
 def ConfigPartie(CoupsJ1,CoupsJ2) :
     bon = False
     while not bon :
@@ -107,17 +119,68 @@ def ConfigPartie(CoupsJ1,CoupsJ2) :
     
     return Partie(SMDJ, CoupsJ1, CoupsJ2)
 
-def main() :
-    count = 0
-    s1 = 0
-    s2 = 0
-    matchsNuls = 0
+
+
+
+
+
+def BoucleExecutionsThread() :
     CoupsJ1 = []
     CoupsJ2 = []
+    global s1
+    global s2
+    global matchsNuls
+    victoire = Partie(2,CoupsJ1,CoupsJ2)
+    print("Liste des coups du joueur 1 : ",CoupsJ1)
+    print("Liste des coups du joueur 2 : ",CoupsJ2)
+    if victoire == 0 :
+        lock.acquire()
+        s1 += 0
+        s2 += 0
+        matchsNuls += 1
+        lock.release()
+    elif victoire == 1 :
+        lock.acquire()
+        s1 += 1
+        lock.release()
+    else :
+        lock.acquire()
+        s2 += 1
+        lock.release()
+
+
+def mainAsynchrone() :
+    count = 0
+    threads = []
+    start = time.perf_counter()
+    for i in range(100):
+        for k in range (multiprocessing.cpu_count()) :
+            t = threading.Thread(target=BoucleExecutionsThread)
+            t.start()
+            threads.append(t)
+        for k in range(multiprocessing.cpu_count()) :
+            threads[k].join()
+        threads.clear()
+    print("Score : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls)
+    finish = time.perf_counter()
+    print("Finished in : ", round(finish-start,2)," seconds " )
+
+
+
+
+
+def main() :
+    count = 0
+    global s1
+    global s2
+    global matchsNuls
+    CoupsJ1 = []
+    CoupsJ2 = []
+    start = time.perf_counter()
     for k in range (0,1000,1) :
         CoupsJ1 = []
         CoupsJ2 = []
-        victoire = Partie(2,CoupsJ1,CoupsJ2)
+        victoire = Partie(2,7,4,15,15,CoupsJ1,CoupsJ2)
         print("Liste des coups du joueur 1 : ",CoupsJ1)
         print("Liste des coups du joueur 2 : ",CoupsJ2)
         if victoire == 0 :
@@ -128,10 +191,9 @@ def main() :
             s1 += 1
         else :
             s2 += 1
-
     print("Score : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls)
-
-
+    finish = time.perf_counter()
+    print("Finished in : ", round(finish-start,2)," seconds " )
 
 
 

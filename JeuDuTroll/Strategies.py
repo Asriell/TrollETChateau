@@ -5,7 +5,7 @@ def StrategieAleatoire(n):
     if n//2 > 1 : 
         rand = random.randint(1,n//2)
     else :
-        rand = 1
+        rand = random.randint(1,n)
     print ("Coup joue : ", rand)
     return rand
 
