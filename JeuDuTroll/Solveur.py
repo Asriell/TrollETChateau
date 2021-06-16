@@ -225,14 +225,14 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
 
 
 #matrice = []
-#for i in range(14) :
+#for i in range(15) :
 #    col = []
-#    for j in range(14) :
+#    for j in range(15) :
 #        col.append(float("inf"))
 #    matrice.append(col)
 
-#MatriceGains(13,10,4,7,matrice)
-#print(SimplexGainsMatrice(13,10,matrice))
+#MatriceGains(15,15,4,7,matrice)
+#print(SimplexGainsMatrice(15,15,matrice))
 
 #matTmp = []
 #for iTmp in range(14):

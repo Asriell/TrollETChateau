@@ -51,7 +51,7 @@ def StrategieMixteOptimale(nbPierresCourant,nbPierresCourantAdversaire,nbCases,p
         simplex.MatriceGains(nbPierresCourant-1,nbPierresCourantAdversaire-1,positionTroll,nbCases,matrice) # calcul de la matrice de gains en fonction du nombre de pierres lancees
         s = simplex.SimplexGainsMatrice(nbPierresCourant-1,nbPierresCourantAdversaire-1,matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
         probabilitesStrategieMixte = s.x # distribution de probabilites des coups possibles, avec x[0] le cas ou le joueur lance toutes ses pierres et x[nbPierresCourant-1] le cas ou le joueur ne lance qu'une seule pierre.
-        #print(probabilitesStrategieMixte) # affichage de la distribution de probabilites, a commenter / decommenter au besoin.
+        print(probabilitesStrategieMixte) # affichage de la distribution de probabilites, a commenter / decommenter au besoin.
         acc = 1
         i = nbPierresCourant -1
         while acc > rand and i > 1:
