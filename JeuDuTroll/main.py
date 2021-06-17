@@ -60,7 +60,7 @@ def main() : # programme principal, en synchrone, pertinent pour l'affichage de 
     CoupsJ1 = []
     CoupsJ2 = []
     # start = time.perf_counter() # timestamp de debut de programme pour mesurer le temps d'execution
-    for k in range (1) : # iteration sur le nombre de parties
+    for k in range (1000) : # iteration sur le nombre de parties
         CoupsJ1 = []
         CoupsJ2 = []
         victoire = troll.Partie(2,7,4,15,15,CoupsJ1,CoupsJ2) # 0 = nul, 1 = victoire J1, 2 = victoire J2

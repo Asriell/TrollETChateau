@@ -15,7 +15,7 @@ def StrategieAleatoire(n): # strategie aleatoire. Il n'est pas rationnel de joue
 
 
 def StrategiePrudentePure(nbPierresTotal,nbCases,nbPierresCourant) : # Le troll doit bouger de NbCase //2 au maximum afin d'aller dans le chateau d'un joueur.
-    distanceParcoursTroll = nbCases//2 # L'idee de cette strategie est d envoyer le minimum de pierres, tout en maximisant la frequence a laquelle le troll se deplace.
+    distanceParcoursTroll = nbCases//2 # L'idee de cette strategie est d envoyer le maximum de pierres, tout en maximisant la frequence a laquelle le troll se deplace en faveur du joueur.
     if nbPierresTotal//distanceParcoursTroll <= nbPierresCourant :
         return nbPierresTotal//distanceParcoursTroll
     else :

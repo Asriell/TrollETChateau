@@ -177,6 +177,10 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                 t -= 1
             if nbPierresLanceesJ1 > nbPierresLanceesJ2 :
                 t += 1
+            if t == -((nbCases//2) - 1) :
+                matrice[i][j] = -1
+            elif t == (nbCases//2)-1 :
+                matrice[i][j] = 1
             if i == 0 : # remplissage de la matrice pour tous les cas triviaux
                 if t > 0 :
                     if j == t :
@@ -225,26 +229,26 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
 
 
 #matrice = []
-#for i in range(15) :
+#for i in range(20) :
 #    col = []
-#    for j in range(15) :
+#    for j in range(21) :
 #        col.append(float("inf"))
 #    matrice.append(col)
 
-#MatriceGains(15,15,4,7,matrice)
-#print(SimplexGainsMatrice(15,15,matrice))
+#MatriceGains(20,20,3,7,matrice)
+#print(SimplexGainsMatrice(20,20,matrice))
 
 #matTmp = []
-#for iTmp in range(14):
+#for iTmp in range(15):
 #    col = []
-#    for jTmp in range(14):
+#    for jTmp in range(15):
 #        col.append(matrice[iTmp][jTmp])
 #    matTmp.append(col)
 
 #for i in range(len(matTmp)) :
 #    print(matTmp[i])
 
-#print(SimplexGainsMatrice(14,14,matTmp))
+#print(SimplexGainsMatrice(9,2,matTmp))
 
 #matrice = [
 #        [31/6,-1,-2,-3],

@@ -58,8 +58,8 @@ def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,Coups
                     print("entrez une valeur entiere svp")
             CoupsJ2.append(CoupJ2)
         else : # si ce n'est pas un joueur, il faut appeler une fonction qui renvoie le nombre de pierres lancees, elle sont dans le module Strategies.
-            CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
-            #CoupJ2 = strat.StrategiePrudentePure(15,7,plateau.nbPierresJoueur2)
+            CoupJ2 = strat.StrategiePrudentePure(_pierresJ2Depart,plateau.nbCases,plateau.nbPierresJoueur2)
+            #CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
             #CoupJ2 = strat.Strategie1(15,7,plateau.nbPierresJoueur2,plateau.nbPierresJoueur1,plateau.posTroll,2)
             CoupsJ2.append(CoupJ2)
         plateau.nbPierresJoueur1 -= CoupJ1
