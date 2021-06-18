@@ -1,5 +1,6 @@
 # module qui comporte toutes les fonctions de strategie
 import random
+import numpy as np
 import Solveur as simplex
 
 def StrategieTest() : # strategir non rationnelle qui consiste a toujours lancer une pierre.
@@ -41,22 +42,58 @@ def StrategieDerniereChance(nbCases,nbPierresCourant,nbPierresCourantAdversaire,
 def StrategieMixteOptimale(nbPierresCourant,nbPierresCourantAdversaire,nbCases,positionTroll) :
     #Calcul de la matrice de gains
     if nbPierresCourant > 1 : # Si il ne reste qu'une seule pierre, on peut retourner 1 directement.
-        rand = random.random() # tirage d'un nombre aleatoire.
+        indexRand = random.uniform(0.0,1.0) # tirage d'un nombre aleatoire.
+        indexRand = (indexRand * 100) % 10
+        arrayRand = np.random.random((10,1))
+        rand = arrayRand[int(indexRand)]
+        print("nombre tire : " , rand)
         matrice = []
-        for i in range(nbPierresCourant-1) :
+        for i in range(nbPierresCourant) :
             col = []
-            for j in range(nbPierresCourantAdversaire-1) :
+            for j in range(nbPierresCourantAdversaire) :
                 col.append(float("inf"))
             matrice.append(col) # creation d'une matrice qui va stocker les gains.
-        simplex.MatriceGains(nbPierresCourant-1,nbPierresCourantAdversaire-1,positionTroll,nbCases,matrice) # calcul de la matrice de gains en fonction du nombre de pierres lancees
-        s = simplex.SimplexGainsMatrice(nbPierresCourant-1,nbPierresCourantAdversaire-1,matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
+        simplex.MatriceGains(nbPierresCourant,nbPierresCourantAdversaire,positionTroll,nbCases,matrice) # calcul de la matrice de gains en fonction du nombre de pierres lancees
+        s = simplex.SimplexGainsMatrice(nbPierresCourant,nbPierresCourantAdversaire,matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
         probabilitesStrategieMixte = s.x # distribution de probabilites des coups possibles, avec x[0] le cas ou le joueur lance toutes ses pierres et x[nbPierresCourant-1] le cas ou le joueur ne lance qu'une seule pierre.
         print(probabilitesStrategieMixte) # affichage de la distribution de probabilites, a commenter / decommenter au besoin.
         acc = 1
-        i = nbPierresCourant -1
+        i = nbPierresCourant
         while acc > rand and i > 1:
             acc -= probabilitesStrategieMixte[nbPierresCourant -i]
             i-=1
+            print(acc, "   ",i)
         return i # On cherche dans la distribution de probabilites le coup i qui est associe au nombre de l'on a tire.
     else :
         return 1
+
+
+    #def StrategieApprentissage(phase,nbPierresCourant,nbPierresCourantAdversaire,nbCases,positionTroll) :
+
+
+
+def StrategieMixteOptimale2(nbPierresCourant,nbPierresCourantAdversaire,nbCases,positionTroll) :
+    #Calcul de la matrice de gains
+    if nbPierresCourant > 1 : # Si il ne reste qu'une seule pierre, on peut retourner 1 directement.
+        matrice = []
+        for i in range(nbPierresCourant) :
+            col = []
+            for j in range(nbPierresCourantAdversaire) :
+                col.append(float("inf"))
+            matrice.append(col) # creation d'une matrice qui va stocker les gains.
+        simplex.MatriceGains(nbPierresCourant,nbPierresCourantAdversaire,positionTroll,nbCases,matrice) # calcul de la matrice de gains en fonction du nombre de pierres lancees
+        s = simplex.SimplexGainsMatrice(nbPierresCourant,nbPierresCourantAdversaire,matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
+        probabilitesStrategieMixte = s.x # distribution de probabilites des coups possibles, avec x[0] le cas ou le joueur lance toutes ses pierres et x[nbPierresCourant-1] le cas ou le joueur ne lance qu'une seule pierre.
+        print(probabilitesStrategieMixte) # affichage de la distribution de probabilites, a commenter / decommenter au besoin.
+        probasSansGain = np.delete(probabilitesStrategieMixte,len(probabilitesStrategieMixte)-1)
+        i = np.random.choice(len(probasSansGain),p=probasSansGain)
+        return nbPierresCourant - i
+    else :
+        return 1
+    #    while acc > rand and i > 1:
+    #        acc -= probabilitesStrategieMixte[nbPierresCourant -i]
+    #        i-=1
+    #        print(acc, "   ",i)
+    #    return i # On cherche dans la distribution de probabilites le coup i qui est associe au nombre de l'on a tire.
+    #else :
+    #    return 1

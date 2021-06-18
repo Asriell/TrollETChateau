@@ -168,20 +168,22 @@ def ValeurGainsMatrice(size_x,size_y,mat) : # retourne le dernier x de la maximi
 
 def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # remplissage de la matrice de gains
     positionTrollInitiale = positionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
+    #print ("position troll initial recentree : ",positionTrollInitiale, " position Troll dans le jeu : ",positionTroll, "milieu a : ", nbCases//2 + 1)
     for i in range (nbPierresJ1) :
         for j in range (nbPierresJ2) : # i = nb pierres restantes au J1, j = nb pierres restantes au J2
             t = positionTrollInitiale
+            #print ("t avant changement  : ",t)
             nbPierresLanceesJ1 = nbPierresJ1 - i
             nbPierresLanceesJ2 = nbPierresJ2 - j # pierres lancees = pierres initiales - pierres restantes, mouvement du troll en fonction.
             if nbPierresLanceesJ1 < nbPierresLanceesJ2 :
                 t -= 1
             if nbPierresLanceesJ1 > nbPierresLanceesJ2 :
                 t += 1
-            if t == -((nbCases//2) - 1) :
+            if t == -(nbCases//2) : # remplissage de la matrice pour tous les cas triviaux : D'abord les cas ou le deplacement de t menerait a la victoire
                 matrice[i][j] = -1
             elif t == (nbCases//2)-1 :
                 matrice[i][j] = 1
-            if i == 0 : # remplissage de la matrice pour tous les cas triviaux
+            elif i == 0 : # Ensuite, le cas (0,j,t)
                 if t > 0 :
                     if j == t :
                         matrice[i][j] = 0
@@ -196,7 +198,7 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                         matrice[i][j] = 0
                     else :
                         matrice[i][j] = -1
-            elif j == 0 :
+            elif j == 0 : # Ensuite, le cas (i,0,t)
                 if t < 0 :
                     if i == abs(t) :
                         matrice[i][j] = 0
@@ -211,7 +213,18 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                         matrice[i][j] = 0
                     else :
                         matrice[i][j] = 1
-            else :
+            elif i == j :
+                if t == 0:
+                    matrice[i][j] = 0
+                else :
+                    matTmp = []
+                    for iTmp in range(i):
+                        col = []
+                        for jTmp in range(j):
+                            col.append(matrice[iTmp][jTmp])
+                        matTmp.append(col)
+                    matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp) # si on n'est pas dans un cas trivial, remplissage de la matrice par un simplex de sous-matrices deja calculees.
+            else : # Sinon
                 matTmp = []
                 for iTmp in range(i):
                     col = []
@@ -225,36 +238,36 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                 #for k in range(len(matTmp)) :
                 #    print("mat tmp : " ,matTmp[k])
                 matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp) # si on n'est pas dans un cas trivial, remplissage de la matrice par un simplex de sous-matrices deja calculees.
-                #print(ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp))
+                #print(SimplexGainsMatrice(len(matTmp),len(matTmp[0]),matTmp))
+                #print(round(SimplexGainsMatrice(len(matTmp),len(matTmp[0]),matTmp).x[len(matTmp)],10))
+            #print("i = ",i," j = ",j, "t = ",t, " gain associe : ",matrice[i][j])
 
 
-#matrice = []
-#for i in range(20) :
-#    col = []
-#    for j in range(21) :
-#        col.append(float("inf"))
-#    matrice.append(col)
+def Debug(x=15,y=15,troll=4,cases=7) : # Executions de debogage, permet de voir les distributions de probabilite a partir d'une matrice
 
-#MatriceGains(20,20,3,7,matrice)
-#print(SimplexGainsMatrice(20,20,matrice))
+    matrice = []
+    for i in range(x) :
+        col = []
+        for j in range(y) :
+            col.append(float("inf"))
+        matrice.append(col)
 
-#matTmp = []
-#for iTmp in range(15):
-#    col = []
-#    for jTmp in range(15):
-#        col.append(matrice[iTmp][jTmp])
-#    matTmp.append(col)
+    MatriceGains(x,y,troll,cases,matrice)
+    print(SimplexGainsMatrice(x,y,matrice))
+    for i in range(len(matrice)) :
+        print(matrice[i])
 
-#for i in range(len(matTmp)) :
-#    print(matTmp[i])
+    #matTmp = []
+    #for iTmp in range(x):
+    #    col = []
+    #    for jTmp in range(y):
+    #        col.append(matrice[iTmp][jTmp])
+    #    matTmp.append(col)
 
-#print(SimplexGainsMatrice(9,2,matTmp))
+    #for i in range(len(matTmp)) :
+    #    print(matTmp[i])
 
-#matrice = [
-#        [31/6,-1,-2,-3],
-#        [-1,31/6,-1,-2],
-#        [-2,-1,31/6,-1],
-#        [-3,-2,-1,31/6]
-#        ]
+    #print(SimplexGainsMatrice(x,y,matTmp))
 
-#print(SimplexGainsMatrice(4,4,matrice))
+
+#Debug(5,4,2,5)
