@@ -50,10 +50,11 @@ def StrategiePrudente(nbPierresCourant,nbPierresCourantAdversaire,nbCases,positi
                 col.append(float("inf"))
             matrice.append(col) # creation d'une matrice qui va stocker les gains.
         simplex.MatriceGains(nbPierresCourant,nbPierresCourantAdversaire,positionTroll,nbCases,matrice) # calcul de la matrice de gains en fonction du nombre de pierres lancees
-        s = simplex.SimplexGainsMatrice(nbPierresCourant,nbPierresCourantAdversaire,matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
+        s = simplex.solve(matrice) # simplex de la matrice du sous-jeu afin d'obtenir le gain et la distribution de probabilites des coups a jouer
         probabilitesStrategieMixte = s.x # distribution de probabilites des coups possibles, avec x[0] le cas ou le joueur lance toutes ses pierres et x[nbPierresCourant-1] le cas ou le joueur ne lance qu'une seule pierre.
         print(probabilitesStrategieMixte) # affichage de la distribution de probabilites, a commenter / decommenter au besoin.
         probasSansGain = np.delete(probabilitesStrategieMixte,len(probabilitesStrategieMixte)-1) #retrait de la valeur de gain, pour seulement avoir les différentes probabilites
+        probasSansGain = list(map(lambda x: abs(x),probasSansGain))
         i = np.random.choice(len(probasSansGain),p=probasSansGain) #selection d'un indice selon les probabilites
         return nbPierresCourant - i #pierres du joueur - pierresRestantes apres lancer = nombre de pierres lancees
     else :

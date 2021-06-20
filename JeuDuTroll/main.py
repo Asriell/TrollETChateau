@@ -16,11 +16,11 @@ def main() : # programme principal, en synchrone, pertinent pour l'affichage de 
     CoupsJ1 = []
     CoupsJ2 = []
     start = time.perf_counter() # timestamp de debut de programme pour mesurer le temps d'execution
-    for k in range (500) : # iteration sur le nombre de parties, augmenter ce chiffre augmentera fortement le temps d'execution
+    for k in range (100) : # iteration sur le nombre de parties, augmenter ce chiffre augmentera fortement le temps d'execution
         print ("iteration n° ", k+1)
         CoupsJ1 = []
         CoupsJ2 = []
-        victoire = troll.Partie(2,7,4,25,25,CoupsJ1,CoupsJ2) # 0 = nul, 1 = victoire J1, 2 = victoire J2 | mode,nombre de cases,position du troll, nombre de pierres par joueur, historique 
+        victoire = troll.Partie(2,7,4,10,10,CoupsJ1,CoupsJ2) # 0 = nul, 1 = victoire J1, 2 = victoire J2 | mode,nombre de cases,position du troll, nombre de pierres par joueur, historique 
         print("Liste des coups du joueur 1 : ",CoupsJ1)
         print("Liste des coups du joueur 2 : ",CoupsJ2)
         if victoire == 0 :
@@ -43,4 +43,4 @@ def main() : # programme principal, en synchrone, pertinent pour l'affichage de 
 
 
 
-#main()
+main()
