@@ -1,27 +1,9 @@
 import JeuDuTroll as troll
-import threading
-import multiprocessing
 import time
 
 s1 = 0 # nombre de fois ou la strategie du joueur 1 a gagne 
 s2 = 0 # nombre de fois ou la strategie du joueur 2 a gagne
 matchsNuls = 0 # nombre de matchs nuls
-lock = threading.Lock() # semaphore pour les threads, pour pouvoir incrémenter les compteurs de victoire de façon concurrente.
-
-
-
-def mainAsynchrone() : # Un exemple de main alternatif, qui peut être execute a la place de la fonction main, pour reduire les temps de calcul sur de grandes valeurs d'iteration.
-    threads = [] # Tous les threads en cours d'execution
-    #start = time.perf_counter() # timestamp de debut de programme pour mesurer le temps d'execution 
-    for k in range (multiprocessing.cpu_count()) : # on va lancer un thread par coeur logique du processeur car il n'est pas pertinent d'en lancer plus a la fois 
-        t = threading.Thread(target=main) # creation du thread qui pointe vers la fonction qu'il devra executer
-        t.start() # lancement du thread
-        threads.append(t) # ajout dans le tableau des processus en cours d'execution.
-    for k in range(multiprocessing.cpu_count()) : # On attend que tous les processus aient termines
-        threads[k].join()
-    print("FINAL Score : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls) # Statistiques finales
-    #finish = time.perf_counter() # timestamp de fin de programme pour mesurer le temps d'execution 
-    #print("Finished in : ", round(finish-start,2)," seconds " ) # temps d'execution
 
 
 
@@ -33,30 +15,26 @@ def main() : # programme principal, en synchrone, pertinent pour l'affichage de 
     global matchsNuls # passage en variables globales pour pouvoir etre accedes par les threads de la version asynchrone
     CoupsJ1 = []
     CoupsJ2 = []
-    # start = time.perf_counter() # timestamp de debut de programme pour mesurer le temps d'execution
-    for k in range (1000) : # iteration sur le nombre de parties
+    start = time.perf_counter() # timestamp de debut de programme pour mesurer le temps d'execution
+    for k in range (500) : # iteration sur le nombre de parties, augmenter ce chiffre augmentera fortement le temps d'execution
+        print ("iteration n° ", k+1)
         CoupsJ1 = []
         CoupsJ2 = []
-        victoire = troll.Partie(2,7,4,15,15,CoupsJ1,CoupsJ2) # 0 = nul, 1 = victoire J1, 2 = victoire J2
+        victoire = troll.Partie(2,7,4,25,25,CoupsJ1,CoupsJ2) # 0 = nul, 1 = victoire J1, 2 = victoire J2 | mode,nombre de cases,position du troll, nombre de pierres par joueur, historique 
         print("Liste des coups du joueur 1 : ",CoupsJ1)
         print("Liste des coups du joueur 2 : ",CoupsJ2)
         if victoire == 0 :
-            lock.acquire()
             s1 += 0
             s2 += 0
             matchsNuls += 1
-            lock.release()
         elif victoire == 1 :
-            lock.acquire()
             s1 += 1
-            lock.release()
         else :
-            lock.acquire()
             s2 += 1
-            lock.release()
-    print("Score : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls)
-    #finish = time.perf_counter() # timestamp de fin de programme pour mesurer le temps d'execution 
-    #print("Finished in : ", round(finish-start,2)," seconds " )
+        print("Score : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls)
+    print("Score final : ","Strategie 1 : ", s1, " Strategie 2 : ", s2, " Matchs nuls : ", matchsNuls)
+    finish = time.perf_counter() # timestamp de fin de programme pour mesurer le temps d'execution 
+    print("Finished in : ", round(finish-start,2)," seconds " )
 
 
 
@@ -65,4 +43,4 @@ def main() : # programme principal, en synchrone, pertinent pour l'affichage de 
 
 
 
-main()
+#main()

@@ -41,7 +41,8 @@ def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,Coups
             CoupsJ1.append(CoupJ1)
         else :  # si ce n'est pas un joueur, il faut appeler une fonction qui renvoie le nombre de pierres lancees, elle sont dans le module Strategies.
             #CoupJ1 = strat.StrategieAleatoire(plateau.nbPierresJoueur1)
-            CoupJ1 = strat.StrategieMixteOptimale2(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
+            CoupJ1 = strat.StrategiePrudente(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
+            #CoupJ1 = strat.StrategieAgressive(_pierresJ1Depart,plateau.nbCases,plateau.nbPierresJoueur1)
             #CoupJ1 = strat.Strategie1(15,7,plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.posTroll,1)
             CoupsJ1.append(CoupJ1)
 
@@ -58,9 +59,10 @@ def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,Coups
                     print("entrez une valeur entiere svp")
             CoupsJ2.append(CoupJ2)
         else : # si ce n'est pas un joueur, il faut appeler une fonction qui renvoie le nombre de pierres lancees, elle sont dans le module Strategies.
-            #CoupJ2 = strat.StrategiePrudentePure(_pierresJ2Depart,plateau.nbCases,plateau.nbPierresJoueur2)
+            #CoupJ2 = strat.StrategieAgressive(_pierresJ2Depart,plateau.nbCases,plateau.nbPierresJoueur2)
             CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
             #CoupJ2 = strat.Strategie1(15,7,plateau.nbPierresJoueur2,plateau.nbPierresJoueur1,plateau.posTroll,2)
+            #CoupJ2 = strat.StrategiePrudenteJ2(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
             CoupsJ2.append(CoupJ2)
         plateau.nbPierresJoueur1 -= CoupJ1
         plateau.nbPierresJoueur2 -= CoupJ2
@@ -81,7 +83,7 @@ def ElectionJoueurGagnant (plateau) :
     elif plateau.posTroll == plateau.nbCases :
         print("Joueur 1 gagne ! ")
         return 1
-    else : # si le troll n'est pas arrive a destination, deplacement du trol en fonction du reste de pierres de chaque joueur, puis election du vainqueur en fonction de la position finale du troll.
+    else : # si le troll n'est pas arrive a destination, deplacement du troll en fonction du reste de pierres de chaque joueur, puis election du vainqueur en fonction de la position finale du troll.
         if plateau.nbPierresJoueur1 <= 0 :
             plateau.posTroll -= plateau.nbPierresJoueur2
         elif plateau.nbPierresJoueur2 <= 0 :

@@ -1,6 +1,7 @@
 # Solveur permettant de resoudre des simplex avec un nombre de contraintes et de variables quelconques
 import numpy as np
 from scipy.optimize import minimize
+from scipy.optimize import linprog
 
 class Solveur: # classe qui contient l'ensemble des fonctions  (objectif et sous-contraintes), sous forme de references sur fonction, ainsi que la methode de resolution.
     x0 = [0,0,0,0,1] # variables du programme lineaire par defaut.
@@ -19,8 +20,9 @@ class Solveur: # classe qui contient l'ensemble des fonctions  (objectif et sous
 
 
     def solve(self) : # resolution du simplex
-        sol = minimize(self.objective,self.x0,method='SLSQP',bounds = self.bnds,constraints = self.cons)
+        sol = minimize(self.objective,self.x0,method='SLSQP',bounds = self.bnds,constraints = self.cons) # scipy ne possede pas de fonction de maximisation, il faut donc minimiser l'oppose afin d'obtenir le maximum.
         return sol
+
 
 
 
@@ -74,7 +76,7 @@ def constraintSum(x) :
     return sum
 
 
-def constraintSumN(n): #fonction qui genere une fonction de sous-contraintes tel que x1 + x2 + ... + xn = 1
+def constraintSumN(n): #fonction qui genere une fonction de sous-contrainte telle que x1 + x2 + ... + xn = 1
     def constraintSum(x) :
         sum = -1 # equivalent a x1 + x2 + ... + xn - 1 = 0
         for k in range(n):
@@ -82,7 +84,7 @@ def constraintSumN(n): #fonction qui genere une fonction de sous-contraintes tel
         return sum
     return constraintSum
 
-def constraints(n,gains,vars): #fonction qui genere une fonction de sous-contraintes telle que gains(1,n) * x1 + gains(2,n) * x2 + ... + gains(vars-1,n) * x(vars-1) - xvars  <= 0 (le dernier x etant g)
+def constraints(n,gains,vars): #fonction qui genere une fonction de sous-contrainte telle que gains(1,n) * x1 + gains(2,n) * x2 + ... + gains(vars-1,n) * x(vars-1) - xvars  <= 0 (xvars etant le gain g)
     def constraintN(x) :
         sum = 0
         for k in range(0,vars,1):
@@ -167,12 +169,10 @@ def ValeurGainsMatrice(size_x,size_y,mat) : # retourne le dernier x de la maximi
 
 
 def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # remplissage de la matrice de gains
-    positionTrollInitiale = positionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
-    #print ("position troll initial recentree : ",positionTrollInitiale, " position Troll dans le jeu : ",positionTroll, "milieu a : ", nbCases//2 + 1)
+    positionTrollInitiale = positionTroll - (nbCases//2 + 1 ) # 1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
     for i in range (nbPierresJ1) :
         for j in range (nbPierresJ2) : # i = nb pierres restantes au J1, j = nb pierres restantes au J2
             t = positionTrollInitiale
-            #print ("t avant changement  : ",t)
             nbPierresLanceesJ1 = nbPierresJ1 - i
             nbPierresLanceesJ2 = nbPierresJ2 - j # pierres lancees = pierres initiales - pierres restantes, mouvement du troll en fonction.
             if nbPierresLanceesJ1 < nbPierresLanceesJ2 :
@@ -213,6 +213,7 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                         matrice[i][j] = 0
                     else :
                         matrice[i][j] = 1
+
             elif i == j :
                 if t == 0:
                     matrice[i][j] = 0
@@ -223,7 +224,7 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
                         for jTmp in range(j):
                             col.append(matrice[iTmp][jTmp])
                         matTmp.append(col)
-                    matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp) # si on n'est pas dans un cas trivial, remplissage de la matrice par un simplex de sous-matrices deja calculees.
+                    matrice[i][j] =  ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp) # si les joueurs ont le même nombre de pierres, le cas est trivial si le troll est au milieu (pas d'avantage pour un joueur). Sinon, ce n'est plus un cas trivial.
             else : # Sinon
                 matTmp = []
                 for iTmp in range(i):
@@ -243,6 +244,80 @@ def MatriceGains(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # rem
             #print("i = ",i," j = ",j, "t = ",t, " gain associe : ",matrice[i][j])
 
 
+
+
+
+
+def MatriceGainsJoueur2(nbPierresJ1, nbPierresJ2,positionTroll,nbCases,matrice) : # equivalent a la fonction au-dessus, mais calcule les gains du joueur 2.
+    positionTrollInitiale = positionTroll - (nbCases//2 + 1 ) #1 = -3 = Chez le J1, 4 = 0 = Au Milieu, 7 = 3 = Chez le J2 Pour nbCases = 7
+    for i in range (nbPierresJ2) :
+        for j in range (nbPierresJ1) :
+            t = positionTrollInitiale
+            nbPierresLanceesJ1 = nbPierresJ1 - j
+            nbPierresLanceesJ2 = nbPierresJ2 - i 
+            if nbPierresLanceesJ1 < nbPierresLanceesJ2 :
+                t -= 1
+            if nbPierresLanceesJ1 > nbPierresLanceesJ2 :
+                t += 1
+            if t == -(nbCases//2) : 
+                matrice[i][j] = 1
+            elif t == (nbCases//2)-1 :
+                matrice[i][j] = -1
+            elif i == 0 :
+                if t < 0 :
+                    if j == abs(t) :
+                        matrice[i][j] = 0
+                    elif j > abs(t) :
+                        matrice[i][j] = -1
+                    else :
+                        matrice[i][j] = 1
+                elif t > 0 :
+                    matrice[i][j] = -1
+                else :
+                    if j == 0 :
+                        matrice[i][j] = 0
+                    else :
+                        matrice[i][j] = -1
+            elif j == 0 : 
+                if t > 0 :
+                    if i == t :
+                        matrice[i][j] = 0
+                    elif i < t :
+                        matrice[i][j] = -1
+                    else :
+                        matrice[i][j] = 1
+                elif t < 0 :
+                    matrice[i][j] = 1
+                else :
+                    if i == 0 :
+                        matrice[i][j] = 0
+                    else :
+                        matrice[i][j] = 1
+
+            elif i == j :
+                if t == 0:
+                    matrice[i][j] = 0
+                else :
+                    matTmp = []
+                    for iTmp in range(i):
+                        col = []
+                        for jTmp in range(j):
+                            col.append(matrice[iTmp][jTmp])
+                        matTmp.append(col)
+                    matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp)
+            else :
+                matTmp = []
+                for iTmp in range(i):
+                    col = []
+                    for jTmp in range(j):
+                        col.append(matrice[iTmp][jTmp])
+                    matTmp.append(col)
+                matrice[i][j] = ValeurGainsMatrice(len(matTmp),len(matTmp[0]),matTmp) # si on n'est pas dans un cas trivial, remplissage de la matrice par un simplex de sous-matrices deja calculees.
+
+
+
+
+
 def Debug(x=15,y=15,troll=4,cases=7) : # Executions de debogage, permet de voir les distributions de probabilite a partir d'une matrice
 
     matrice = []
@@ -256,6 +331,9 @@ def Debug(x=15,y=15,troll=4,cases=7) : # Executions de debogage, permet de voir 
     print(SimplexGainsMatrice(x,y,matrice))
     for i in range(len(matrice)) :
         print(matrice[i])
+    print("___________")
+    solve2(matrice)
+
 
     #matTmp = []
     #for iTmp in range(x):
@@ -270,4 +348,39 @@ def Debug(x=15,y=15,troll=4,cases=7) : # Executions de debogage, permet de voir 
     #print(SimplexGainsMatrice(x,y,matTmp))
 
 
-#Debug(5,4,2,5)
+
+
+def solve2(mat) :
+        A = []
+        B = []
+        for i in range(len(mat)) :
+            colA = []
+            for j in range (len(mat[0])) :
+                colA.append(mat[i][j])
+            colA.append(-1)
+            A.append(colA)
+            B.append(0)
+        Aeq = []
+        colAeq = []
+        for i in range(len(mat[0])) :
+            colAeq.append(1)
+        colAeq.append(0)
+        Aeq.append(colAeq)
+        Beq = np.array([1])
+        C = []
+        b = (0.0,1.0)
+        bnds = []
+        for k in range(len(mat[0])): # pour chaque variable, on ajoute son intervalle, et chaque variable vaut 0 dans la fonction objectif (on cherche a maximiser g)
+            bnds.append(b)
+            C.append(0)
+        bnds.append((-1.0,1.0)) #bornes du gain
+        C.append(1) #pour le gain
+        tmp = np.asarray(A[0])
+        for i in range(1,len(A)) :
+            tmp2 = np.asarray(A[i])
+            tmp = np.append(tmp,tmp2)
+        tmp = tmp.reshape(len(A[0]),len(A))
+        print(" A : ",tmp, " B : ", B, " C : ", C, " Aeq : ",Aeq, " Beq : ", Beq)
+        return linprog(C,A_ub=tmp,b_ub=B,A_eq=Aeq,b_eq=Beq,bounds=bnds,method="simplex",)
+
+Debug(4,3,2,5)
