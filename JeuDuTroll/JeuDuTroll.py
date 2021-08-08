@@ -42,6 +42,7 @@ def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,Coups
         else :  # si ce n'est pas un joueur, il faut appeler une fonction qui renvoie le nombre de pierres lancees, elle sont dans le module Strategies.
             #CoupJ1 = strat.StrategieAleatoire(plateau.nbPierresJoueur1)
             CoupJ1 = strat.StrategiePrudente(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
+            #CoupJ1 = strat.StrategieContreExercice3(_pierresJ1Depart,plateau.nbPierresJoueur1)
             #CoupJ1 = strat.StrategieAgressive(_pierresJ1Depart,plateau.nbCases,plateau.nbPierresJoueur1)
             #CoupJ1 = strat.Strategie1(15,7,plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.posTroll,1)
             CoupsJ1.append(CoupJ1)
@@ -60,9 +61,11 @@ def Partie(mode,_nbCases,_posTrollDepart,_pierresJ1Depart,_pierresJ2Depart,Coups
             CoupsJ2.append(CoupJ2)
         else : # si ce n'est pas un joueur, il faut appeler une fonction qui renvoie le nombre de pierres lancees, elle sont dans le module Strategies.
             #CoupJ2 = strat.StrategieAgressive(_pierresJ2Depart,plateau.nbCases,plateau.nbPierresJoueur2)
-            CoupJ2 = strat.StrategieAleatoire(plateau.nbPierresJoueur2)
-            #CoupJ2 = strat.Strategie1(15,7,plateau.nbPierresJoueur2,plateau.nbPierresJoueur1,plateau.posTroll,2)
+            #CoupJ2 = strat.StrategieAleatoireExercice3(plateau.nbPierresJoueur2)
+            CoupJ2 = strat.StrategieContreExercice3(_pierresJ2Depart,plateau.nbPierresJoueur2)
             #CoupJ2 = strat.StrategiePrudenteJ2(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
+            #CoupJ2 = strat.Strategie1(15,7,plateau.nbPierresJoueur2,plateau.nbPierresJoueur1,plateau.posTroll,2)
+            #CoupJ2 = strat.StrategiePrudenteNonLineaireJ2(plateau.nbPierresJoueur1,plateau.nbPierresJoueur2,plateau.nbCases,plateau.posTroll)
             CoupsJ2.append(CoupJ2)
         plateau.nbPierresJoueur1 -= CoupJ1
         plateau.nbPierresJoueur2 -= CoupJ2
