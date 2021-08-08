@@ -11,7 +11,7 @@ Dans cette archive se trouvent :
 
 Remarques :
 
--Notre stratégie prudente n'étant pas implémentée de manière optimale, certains résultats qur nous montreront dans le rapport ne seront pas corrects.
--Le code a été repris du projet. Cependant, toute modification sur la structure du jeu demandée lors du TP seront présentes dans le modules Exercice4.
--Pour changer la stratégie d'un joueur, il faut changer la fonction de stratégie appliquée au coup du joueur dans le fichier JeuDuTroll.
--Certains temps d'executions peuvent s'avérer être très longs.
+- Notre stratégie prudente n'étant pas implémentée de manière optimale, certains résultats qur nous montreront dans le rapport ne seront pas corrects.
+- Le code a été repris du projet. Cependant, toute modification sur la structure du jeu demandée lors du TP seront présentes dans le modules Exercice4.
+- Pour changer la stratégie d'un joueur, il faut changer la fonction de stratégie appliquée au coup du joueur dans le fichier JeuDuTroll.
+- Certains temps d'executions peuvent s'avérer être très longs.
