@@ -5,9 +5,9 @@ Projet de Théorie des jeux sur le thème du Jeu du troll :
 
 Dans cette archive se trouvent : 
 
--Le code python de notre TP. Pour l'exécuter : exécuter le fichier main.py. Possibilité de lancer les exercices indépendament, ou notre programme principal en lançant la fonction associée dans le fichier main.py. Les librairies externes utilisées sont numpy et scipy. 
--Ce présent readme
--Un rapoort au format pdf qui contiendra nos réponses réponses au TP.
+- Le code python de notre TP. Pour l'exécuter : exécuter le fichier main.py. Possibilité de lancer les exercices indépendament, ou notre programme principal en lançant la fonction associée dans le fichier main.py. Les librairies externes utilisées sont numpy et scipy. 
+- Ce présent readme
+- Un rapoort au format pdf qui contiendra nos réponses réponses au TP.
 
 Remarques :
 
